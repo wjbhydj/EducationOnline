@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'organization',
     'xadmin',
     'crispy_forms',
+    'captcha',
 ]
 
 AUTH_USER_MODEL = 'users.UserProfile'
@@ -144,3 +145,10 @@ MEDIA_ROOT = (
 )
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+EMAIL_HOST = "smtp.qq.com"  # SMTP服务器主机
+EMAIL_PORT = 25             # 端口
+EMAIL_HOST_USER = "2011764603@qq.com"       # 邮箱地址
+EMAIL_HOST_PASSWORD = "lryfsyuaqtnxbedd"    # 密码
+EMAIL_USE_TLS= True
+EMAIL_FROM = "2011764603@qq.com"            # 邮箱地址
