@@ -16,9 +16,12 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
-from users.views import LoginView, RegisterView
+from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetPwdView, ModifyPwdView
 import xadmin
-import captcha
+from organization.views import OrgView
+from django.views.static import serve
+from django.conf.urls.static import static
+from EducationOnline import settings
 
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
@@ -27,4 +30,10 @@ urlpatterns = [
     url(r'login/',LoginView.as_view(), name='login'),
     url(r'register/', RegisterView.as_view(), name='register'),
     url(r'captcha/', include('captcha.urls')),
-]
+    url(r'active/(?P<active_code>.*)/', ActiveUserView.as_view(), name='user_active'),
+    url(r'forget/', ForgetPwdView.as_view(), name='forget_pwd'),
+    url(r'reset/(?P<active_code>.*)/', ResetPwdView.as_view(), name='reset_pwd'),
+    url(r'modify_pwd/', ModifyPwdView.as_view(), name='modify_pwd'),
+    url(r'org_list/', OrgView.as_view(), name='org_list'),
+    # url(r'media/(?P<path>.*)/', serve, {'document_root':settings.MEDIA_ROOT}),
+] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)   #重点
