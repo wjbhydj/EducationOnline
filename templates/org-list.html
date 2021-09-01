@@ -1,5 +1,6 @@
 
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}
     课程机构列表
 {% endblock %}
@@ -52,27 +53,27 @@
 		<div class="layout">
 			<div class="head">
 				<ul class="tab_header">
-					<li class="active"><a href="?ct=&city=">全部</a> </li>
-					<li class=""><a href="?sort=students&ct=&city=">学习人数 &#8595;</a></li>
-					<li class=""><a href="?sort=courses&ct=&city=">课程数 &#8595;</a></li>
+					<li class="{% if sort == '' %}active{% endif %}"><a href="?sort=students&ct={{ category }}&city={{ city_id }}">全部</a> </li>
+					<li class="{% ifequal sort students %}active{% endifequal %}"><a href="?sort=students&ct={{ category }}&city={{ city_id }}">学习人数 &#8595;</a></li>
+					<li class="{% if sort == 'courses' %}active{% endif %} "><a href="?sort=courses&ct={{ category }}&city={{ city_id }}">课程数 &#8595;</a></li>
 				</ul>
 			</div>
                 {% for course_org in all_orgs.object_list %}
                     <dl class="des difdes">
                     <dt>
-                        <a href="org-detail-homepage.html">
+                        <a href="{% url 'organization:org_home' course_org.id %}">
                             <img width="200" height="120" class="scrollLoading" data-url="{{ MEDIA_URL }}{{ course_org.image }}"/>
                         </a>
                     </dt>
                     <dd>
                         <div class="clearfix">
-                             <a href="org-detail-homepage.html">
+                             <a href="{% url 'organization:org_home' course_org.id %}">
                                  <h1>慕课网</h1>
                                  <div class="pic fl">
 
-                                         <img src="../images/authentication.png"/>
+                                         <img src="{% static 'images/authentication.png' %}"/>
 
-                                         <img src="../images/gold.png"/>
+                                         <img src="{% static 'images/gold.png' %}"/>
 
                                  </div>
                              </a>
@@ -99,7 +100,7 @@
             <ul class="pagelist">
 
                     {% if all_orgs.has_previous %}
-                        <a href="?{{ all_orgs.previous_page_number.querystring }}" class="prev">上一页</a>
+                        <li class="long"><a href="?{{ all_orgs.previous_page_number.querystring }}" class="page">上一页</a></li>
                     {% endif %}
 
                      {% for page in all_orgs.pages %}
@@ -114,8 +115,8 @@
                         {% endif %}
                     {% endfor %}
 
-                    {% if page_obj.has_next %}
-                        <a class="long" href="?{{ page_obj.next_page_number.querystring }}">下一页</a>
+                    {% if all_orgs.has_next %}
+                        <li class="long"><a href="?{{ all_orgs.next_page_number.querystring }}">下一页</a></li>
                     {% endif %}
 
 
@@ -126,16 +127,17 @@
 	<div class="right companyright">
 			<div class="head">我要学习</div>
 			<form class="rightform" id="jsStayForm">
+                {% csrf_token %}
 				<div>
-                    <img src="../images/rightform1.png"/>
+                    <img src="{% static 'images/rightform1.png' %}"/>
                     <input type="text" name="name" id="companyName" placeholder="名字" maxlength="25" />
                 </div>
 				<div>
-                    <img src="../images/rightform2.png"/>
+                    <img src="{% static 'images/rightform2.png' %}"/>
                     <input type="text" name="mobile" id="companyMobile" placeholder="联系电话"/>
                 </div>
 				<div>
-                    <img src="../images/rightform3.png"/>
+                    <img src="{% static 'images/rightform3.png' %}"/>
                     <input type="text" name="course_name" id="companyAddress" placeholder="课程名" maxlength="50" />
                 </div>
                 <p class="error company-tips" id="jsCompanyTips"></p>
@@ -145,36 +147,39 @@
 
 		<div class="right companyrank layout">
 			<div class="head">授课机构排名</div>
-
-
-                <dl class="des">
-                    <dt class="num fl">1</dt>
+                {% for current_org in hot_orgs %}
+                    <dl class="des">
+                    <dt class="num fl">{{ forloop.counter }}</dt>
                     <dd>
-                        <a href="/company/2/"><h1>慕课网</h1></a>
-                        <p>北京市</p>
+                        <a href="/company/2/"><h1>{{ current_org.name }}</h1></a>
+                        <p>{{ current_org.address }}</p>
                     </dd>
                 </dl>
+                {% endfor %}
 
-                <dl class="des">
-                    <dt class="num fl">2</dt>
-                    <dd>
-                        <a href="/company/2/"><h1>慕课网2</h1></a>
-                        <p>深圳市</p>
-                    </dd>
-                </dl>
-
-                <dl class="des">
-                    <dt class="num fl">3</dt>
-                    <dd>
-                        <a href="/company/2/"><h1>北京大学</h1></a>
-                        <p>北京市</p>
-                    </dd>
-                </dl>
-
-
-
-
-		</div>
+		    </div>
         </div>
 </section>
 {% endblock %}
+
+<script>
+    $(function () {
+        $('#jsStayBtn').on('click', function () {
+            $.ajax({
+                cache: false,
+                type: "POST",
+                url: "{% url "organization:add_ask" %}",
+                data: $('#jsStayForm').serialize(),
+                async: true,
+                success: function (data) {
+                    if (data.status == 'success') {
+                        $('#jsStayForm')[0].reset();
+                        alert("提交成功")
+                    } else if (data.status == 'fail') {
+                        $('#jsCompanyTips').html(data.msg)
+                    }
+                },
+            });
+        });
+    })
+</script>

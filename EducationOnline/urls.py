@@ -18,7 +18,7 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetPwdView, ModifyPwdView
 import xadmin
-from organization.views import OrgView
+
 from django.views.static import serve
 from django.conf.urls.static import static
 from EducationOnline import settings
@@ -34,6 +34,6 @@ urlpatterns = [
     url(r'forget/', ForgetPwdView.as_view(), name='forget_pwd'),
     url(r'reset/(?P<active_code>.*)/', ResetPwdView.as_view(), name='reset_pwd'),
     url(r'modify_pwd/', ModifyPwdView.as_view(), name='modify_pwd'),
-    url(r'org_list/', OrgView.as_view(), name='org_list'),
-    # url(r'media/(?P<path>.*)/', serve, {'document_root':settings.MEDIA_ROOT}),
+    url(r'org/', include('organization.urls', namespace='organization')),
+    url(r'course/', include('course.urls', namespace='course')),
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)   #重点

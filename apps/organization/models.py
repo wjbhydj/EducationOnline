@@ -31,9 +31,16 @@ class CourseOrg(models.Model):
     city = models.ForeignKey(CityDict, verbose_name='所在城市', on_delete=models.CASCADE)
     add_time = models.DateTimeField('添加时间', default=datetime.now)
     category = models.CharField('机构类别', max_length=20, choices=ORG_CHOICES, default='pxjg')
+    students = models.IntegerField('学习人数', default=0)
+    course_nums = models.IntegerField('课程数', default=0)
+
     class Meta:
         verbose_name = '课程机构'
         verbose_name_plural = verbose_name
+
+    def get_teacher_nums(self):
+        """获取机构的教师数"""
+        return self.teacher_set.all().count()
 
     def __str__(self):
         return self.name
@@ -48,6 +55,7 @@ class Teacher(models.Model):
     click_nums = models.IntegerField('点击数', default=0)
     fav_nums = models.IntegerField('收藏数', default=0)
     add_time = models.DateTimeField('添加时间', default=datetime.now)
+    image = models.ImageField('头像', default='', upload_to='teacher/%Y/%m', max_length=100)
 
     class Meta:
         verbose_name = '教师'
