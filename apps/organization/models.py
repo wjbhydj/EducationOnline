@@ -56,6 +56,7 @@ class Teacher(models.Model):
     fav_nums = models.IntegerField('收藏数', default=0)
     add_time = models.DateTimeField('添加时间', default=datetime.now)
     image = models.ImageField('头像', default='', upload_to='teacher/%Y/%m', max_length=100)
+    teacher_age = models.IntegerField('年龄', default=20)
 
     class Meta:
         verbose_name = '教师'

@@ -17,9 +17,9 @@ class CourseResourceXadmin(object):
 
 class VideoXadmin(object):
 
-    list_display = ['lesson', 'name', 'add_time']
-    search_fields = ['lesson', 'name', 'add_time']
-    list_filter = ['lesson', 'name', 'add_time']
+    list_display = ['lesson', 'name', 'add_time', 'url']
+    search_fields = ['lesson', 'name', 'add_time', 'url']
+    list_filter = ['lesson', 'name', 'add_time', 'url']
 
 
 class LessonXadmin(object):
