@@ -70,6 +70,9 @@ class CourseInfoView(LoginRequiredMixin, View):
     """课程章节视频页"""
     def get(self, request, course_id):
         course = Course.objects.get(id=int(course_id))
+        course.students += 1
+        course.save()
+
         all_recourses = CourseResource.objects.filter(course=course)
 
         user_courses = UserCourse.objects.filter(user=request.user, course=course)

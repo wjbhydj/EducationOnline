@@ -33,6 +33,7 @@ class CourseOrg(models.Model):
     category = models.CharField('机构类别', max_length=20, choices=ORG_CHOICES, default='pxjg')
     students = models.IntegerField('学习人数', default=0)
     course_nums = models.IntegerField('课程数', default=0)
+    tag = models.CharField('机构标签', default='全国知名', max_length=10)
 
     class Meta:
         verbose_name = '课程机构'
@@ -64,5 +65,8 @@ class Teacher(models.Model):
 
     def __str__(self):
         return '{}的教师：{}'.format(self.org, self.name)
+
+    def get_course_nums(self):
+        return self.course_set.all().count()
 
 

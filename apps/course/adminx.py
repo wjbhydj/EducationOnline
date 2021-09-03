@@ -1,12 +1,32 @@
 import xadmin
 from .models import Course, CourseResource, Video, Lesson
 
+class LessonInline(object):
+    model = Lesson
+    extra = 0
+
 class CourseXadmin(object):
 
-    list_display = ['name','desc','detail','degree','learn_times','students','fav_nums','image','click_nums','add_time']
+    list_display = ['name','desc','detail','degree','learn_times','students','fav_nums','image','click_nums','add_time', 'get_zj_nums']
     search_fields = ['name','desc','detail','degree','learn_times','students','fav_nums','image','click_nums','add_time']
     list_filter = ['name','desc','detail','degree','learn_times','students','fav_nums','image','click_nums','add_time']
+    model_icon = "fa fa-book"
+    readonly_fields = ['click_nums']
+    order_by = ['-click_nums']
+    exclude = ['fav_nums']
+    list_editable = ['desc', 'degree']
+    inlines = [LessonInline,]
+    refresh_times = [3, 5]
 
+    style_fields = {'detail':'ueditor'}
+
+    def save_models(self):
+        obj = self.new_obj
+        obj.save()
+        if obj.course_org is not None:
+            course_org = obj.course_org
+            course_org.course_nums = Course.objects.filter(course_org=course_org).count()
+            course_org.save()
 
 class CourseResourceXadmin(object):
 

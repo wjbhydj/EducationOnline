@@ -2,6 +2,7 @@ from datetime import datetime
 
 from django.db import models
 from organization.models import CourseOrg, Teacher
+from DjangoUeditor.models import UEditorField
 
 # Create your models here.
 
@@ -13,7 +14,8 @@ class Course(models.Model):
     )
     name = models.CharField('课程名', max_length=100)
     desc = models.CharField('描述', max_length=200)
-    detail = models.TextField('详情')
+    # detail = models.TextField('详情')
+    detail = UEditorField('课程详情', width=600, height=400, default='', imagePath='course/ueditor', filePath='course/ueditor')
     degree = models.CharField('难度', choices=DEGREE_CHOICES, max_length=2)
     learn_times = models.IntegerField('学习时长(分钟数)', default=0)
     students = models.IntegerField('学习人数', default=0)
@@ -27,6 +29,7 @@ class Course(models.Model):
     teacher = models.ForeignKey(Teacher, verbose_name='讲师', on_delete=models.CASCADE, null=True, blank=True)
     you_need_know = models.CharField('课程须知', max_length=300, default='')
     teacher_tell_you = models.CharField('老师告诉你', max_length=300, default='')
+    is_banner = models.BooleanField('是否轮播', default=False)
 
     class Meta:
         verbose_name = '课程'
@@ -35,6 +38,7 @@ class Course(models.Model):
     def get_zj_nums(self):
         """获取这门课程的章节数"""
         return self.lesson_set.all().count()
+    get_zj_nums.short_description = '章节数'
 
     def get_learn_users(self):
         """获取这门课程的学习人数"""

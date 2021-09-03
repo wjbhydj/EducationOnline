@@ -16,7 +16,7 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.views.generic import TemplateView
-from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetPwdView, ModifyPwdView
+from users.views import LoginView, RegisterView, ActiveUserView, ForgetPwdView, ResetPwdView, ModifyPwdView, IndexView, LoginUnsafeView
 import xadmin
 
 from django.views.static import serve
@@ -26,8 +26,9 @@ from EducationOnline import settings
 urlpatterns = [
     # url(r'^admin/', admin.site.urls),
     url(r'^xadmin/', xadmin.site.urls),
-    url(r'index/', TemplateView.as_view(template_name='index.html'), name='index'),
+    url(r'index/', IndexView.as_view(), name='index'),
     url(r'login/',LoginView.as_view(), name='login'),
+    # url(r'login/',LoginUnsafeView.as_view(), name='login'),
     url(r'register/', RegisterView.as_view(), name='register'),
     url(r'captcha/', include('captcha.urls')),
     url(r'active/(?P<active_code>.*)/', ActiveUserView.as_view(), name='user_active'),
@@ -36,4 +37,9 @@ urlpatterns = [
     url(r'modify_pwd/', ModifyPwdView.as_view(), name='modify_pwd'),
     url(r'org/', include('organization.urls', namespace='organization')),
     url(r'course/', include('course.urls', namespace='course')),
+    url(r'users/', include('users.urls', namespace='users')),
+    url(r'ueditor/', include('DjangoUeditor.urls')),
 ] + static(settings.MEDIA_URL,document_root=settings.MEDIA_ROOT)   #重点
+
+handler404 = 'users.views.page_not_found'
+handler500 = 'users.views.page_errors'
